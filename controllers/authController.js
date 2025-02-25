@@ -26,7 +26,11 @@ exports.login = async (req, res) => {
         // Send success response with user data (excluding password)
         const userResponse = {
             id: user._id,
-            email: user.email
+            email: user.email,
+            name: user.name,
+            company: user.company,
+            service: user.service,
+            googleDriveLink: user.googleDriveLink
         };
 
         res.status(200).json({
@@ -100,6 +104,63 @@ exports.getDriveLink = async (req, res) => {
         res.status(500).json({
             status: 'error',
             message: 'Error fetching drive link'
+        });
+    }
+};
+// ... existing code ...
+
+exports.getUserDetails = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const user = await User.findById(id).select('name email company service');
+
+        if (!user) {
+            return res.status(404).json({
+                status: 'fail',
+                message: 'User not found'
+            });
+        }
+
+        res.status(200).json({
+            status: 'success',
+            data: {
+                name: user.name,
+                email: user.email,
+                company: user.company,
+                service: user.service
+            }
+        });
+
+    } catch (error) {
+        res.status(500).json({
+            status: 'error',
+            message: 'Error fetching user details'
+        });
+    }
+};
+exports.getSmartsheetLink = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const user = await User.findById(id);
+
+        if (!user) {
+            return res.status(404).json({
+                status: 'fail',
+                message: 'User not found'
+            });
+        }
+
+        res.status(200).json({
+            status: 'success',
+            data: {
+                smartsheetLink: user.smartsheetLink
+            }
+        });
+
+    } catch (error) {
+        res.status(500).json({
+            status: 'error',
+            message: 'Error fetching smartsheet link'
         });
     }
 };

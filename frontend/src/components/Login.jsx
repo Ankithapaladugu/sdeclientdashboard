@@ -34,7 +34,9 @@ function Login({ onLoginSuccess }) {
         console.log('Stored user data:', storedData);
         
         // Call success callback
-        onLoginSuccess();
+        onLoginSuccess({
+          id: response.data.data.id,
+            email: response.data.data.email});
       } else {
         console.error('Invalid response format:', response.data);
         setError('Received invalid response from server');
